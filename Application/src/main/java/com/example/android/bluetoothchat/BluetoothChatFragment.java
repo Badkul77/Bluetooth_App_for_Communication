@@ -46,6 +46,15 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.android.common.logger.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
@@ -350,7 +359,17 @@ public class BluetoothChatFragment extends Fragment {
 
         }
     }
-
+   /* public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(obj);
+        return out.toByteArray();
+    }
+    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        ObjectInputStream is = new ObjectInputStream(in);
+        return is.readObject();
+    }*/
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
@@ -379,11 +398,79 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
-                    Log.e("Message_Argument_1",""+msg.arg1);
-                    Log.e("Message_Argument_2",""+msg.arg2);
-                    Log.e("Length",""+readBuf.length);
-                    for(int i=0;i<readBuf.length;i++)
-                        Log.e("Values",""+(float)readBuf[i]);
+                   // Log.e("Message_Argument_1",""+msg.arg1);
+                   // Log.e("Message_Argument_2",""+msg.arg2);
+                    //Log.e("object",""+msg.obj);
+
+                    /*try {
+                        byte[] test=serialize(msg.obj);
+                        for(int i=0;i<readBuf.length;i++)
+                            Log.e("New Values",""+(float)test[i]);
+                    } catch (IOException e) {
+                        Log.e("IoException",""+e);
+                    }*/
+                    /*try {
+                        Object che=deserialize(serialize(msg.obj));
+                        Log.e("new Object",che.toString());
+                    } catch (IOException e) {
+                        Log.e("IoException",""+e);
+                    } catch (ClassNotFoundException e) {
+                        Log.e("ClassNotFoundException",""+e);
+                    }*/
+                 /*   Log.e("Length",""+readBuf.length);
+                    int i=0;
+                    for(i=0;i<readBuf.length;i++)
+                    Log.e("Values",""+(char)readBuf[i]);*/
+
+
+                 /*   try {
+                        String string=new String(readBuf,"UTF-8");
+                        Log.e("Encoded String",string);
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e("UnsupportedEncodingException",""+e);
+                    }*/
+                 try {
+                     Log.e("Start", "Start");
+                   /*  for (int i = 1; i < readBuf.length - 3; i += 4) {
+                         int k = 0;
+                         byte[] byteArray = new byte[4];
+                         for (int ii = i; ii < i + 4; ii++)
+                             byteArray[k] = readBuf[ii];
+                         float f = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                         Log.e("Values", "" + f);
+                     }
+                     Log.e("Last Variable", "" + readBuf[readBuf.length - 1]);*/
+                   /*  for (int i = 0; i < 9; i += 4) {
+                         int k = 0;
+                         byte[] byteArray = new byte[4];
+                         for (int ii = i; ii < i + 4; ii++)
+                             byteArray[k] = readBuf[ii];
+                         float f = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                         Log.e("Values", "" + f);
+                         if(i==0)
+                             Ax.setText(""+f);
+                         else if(i==4)
+                             Ay.setText(""+f);
+                         else if(i==8)
+                             Az.setText(""+f);
+
+                     }*/
+                     String readMessage = new String(readBuf, 0, msg.arg1);
+                     receiveBuffer += readMessage;
+                    // if(receiveBuffer.contains("\n")) {
+                         byte[] byteArray = new byte[4];
+                         for (int ii = 0; ii < 4; ii++)
+                             byteArray[ii] = readBuf[ii];
+                         float f = ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).getFloat();
+                         Log.e("Values", "" + f);
+                         Ax.setText("" + f);
+                     //}
+                     //Log.e("Last Variable", "" + readBuf[readBuf.length - 1]);
+                 }
+                 catch (Exception e)
+                 {
+                     Log.e("Exception",""+e);
+                 }
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     receiveBuffer += readMessage;
                     if(receiveBuffer.contains("\n")) {
