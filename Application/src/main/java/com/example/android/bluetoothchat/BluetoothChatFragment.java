@@ -465,7 +465,6 @@ public class BluetoothChatFragment extends Fragment {
                          Log.e("Values", "" + f);
                          Ax.setText("" + f);
                      //}
-                     //Log.e("Last Variable", "" + readBuf[readBuf.length - 1]);
                  }
                  catch (Exception e)
                  {
