@@ -52,8 +52,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -455,15 +458,19 @@ public class BluetoothChatFragment extends Fragment {
                              Az.setText(""+f);
 
                      }*/
-                     String readMessage = new String(readBuf, 0, msg.arg1);
-                     receiveBuffer += readMessage;
-                    // if(receiveBuffer.contains("\n")) {
+                    // String readMessage = new String(readBuf, 0, msg.arg1);
+                     //receiveBuffer += readMessage;
+                     //if(receiveBuffer.contains("\n")) {
                          byte[] byteArray = new byte[4];
                          for (int ii = 0; ii < 4; ii++)
                              byteArray[ii] = readBuf[ii];
-                         float f = ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).getFloat();
-                         Log.e("Values", "" + f);
-                         Ax.setText("" + f);
+                         Float f = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                     Float fs = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                     Double truncatedDouble = BigDecimal.valueOf(fs)
+                             .setScale(2, RoundingMode.HALF_UP)
+                             .doubleValue();
+                         Log.e("Values", "" + fs);
+                         Ax.setText("" + truncatedDouble);
                      //}
                  }
                  catch (Exception e)
