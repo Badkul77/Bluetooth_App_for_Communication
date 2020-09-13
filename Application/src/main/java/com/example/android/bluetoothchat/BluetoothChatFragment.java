@@ -458,20 +458,34 @@ public class BluetoothChatFragment extends Fragment {
                              Az.setText(""+f);
 
                      }*/
-                    // String readMessage = new String(readBuf, 0, msg.arg1);
+                     // String readMessage = new String(readBuf, 0, msg.arg1);
                      //receiveBuffer += readMessage;
                      //if(receiveBuffer.contains("\n")) {
-                         byte[] byteArray = new byte[4];
-                         for (int ii = 0; ii < 4; ii++)
-                             byteArray[ii] = readBuf[ii];
-                         Float f = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-                     Float fs = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-                     Double truncatedDouble = BigDecimal.valueOf(fs)
-                             .setScale(2, RoundingMode.HALF_UP)
-                             .doubleValue();
-                         Log.e("Values", "" + fs);
-                         Ax.setText("" + truncatedDouble);
-                     //}
+                    /* char ch = (char) readBuf[0];
+                     if (ch == 'S')
+                     {*/
+                         for (int i = 0; i < 9; i += 4) {
+                             byte[] byteArray = new byte[4];
+                             for (int ii = i; ii < i + 4; ii++)
+                                 byteArray[ii - i] = readBuf[ii];
+                             //Float f = ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                             double fs =ByteBuffer.wrap(byteArray).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                             Double truncatedDouble = BigDecimal.valueOf(fs)
+                                     .setScale(2, RoundingMode.HALF_UP)
+                                     .doubleValue();
+                             Log.e("Values", "" + fs);
+                             //float firstNumber = (float) 1.0E7;
+                             String firstNumberAsString = String.format("%.0f", fs);
+                             Log.e(" OUt-Put", firstNumberAsString);
+                             if (i == 0)
+                                 Ax.setText("Ax= " + truncatedDouble);
+                             else if (i == 4)
+                                 Ay.setText("Ay= " + truncatedDouble);
+                             else if (i == 8)
+                                 Az.setText("Az= " + truncatedDouble);
+                             //}
+                         }
+
                  }
                  catch (Exception e)
                  {
